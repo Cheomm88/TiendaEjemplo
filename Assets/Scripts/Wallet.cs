@@ -5,16 +5,32 @@ using TMPro;
 
 public class Wallet : MonoBehaviour
 {
+    public static Wallet instance;
+
     [SerializeField]
     float saldo;
     [SerializeField]
     TextMeshProUGUI labelSaldo;
-
+    [SerializeField]
+    TextMeshProUGUI labelConfirmacion;
     [SerializeField]
     GameObject confirmarCompra;
     [SerializeField]
     GameObject noSaldo;
+
+    float precioObjetoQueCompro;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        if (Wallet.instance == null)
+        {
+            Wallet.instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
+    }
     void Start()
     {
         saldo = Random.Range(450f, 950f);
@@ -22,15 +38,31 @@ public class Wallet : MonoBehaviour
 
     }
 
-    public void RestarSaldo(float precio)
+    public void InformarCompra(string nameItem, float precio)
     {
         if (saldo > precio)
         {
-            saldo -= precio;
-            labelSaldo.text = saldo.ToString("000.00") + " €";
+            labelConfirmacion.text = "¿Quieres comprar " + nameItem + " por " + precio + " €?";
+            confirmarCompra.SetActive(true);
+            precioObjetoQueCompro = precio;
         }
         else
         {
+            noSaldo.SetActive(true);
+        }
+    }
+    public void ConfirmarCompra()
+    {
+        if (saldo > precioObjetoQueCompro)
+        {
+            saldo = saldo - precioObjetoQueCompro;
+            precioObjetoQueCompro = 0.0f;
+            labelSaldo.text = saldo.ToString("000.00") + " €";
+            confirmarCompra.SetActive(false);
+        }
+        else
+        {
+            confirmarCompra.SetActive(false);
             noSaldo.SetActive(true);
         }
     }

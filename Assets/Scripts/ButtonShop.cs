@@ -4,11 +4,10 @@ using UnityEngine;
 using TMPro;
 public class ButtonShop : MonoBehaviour
 {
-    [SerializeField]
-    Wallet myWallet;
    // [SerializeField]
     TextMeshProUGUI textButton;
-
+    [SerializeField]
+    string[] posiblesNombres;
     [SerializeField]
     string nameItem = "Objeto";
     [SerializeField]
@@ -16,14 +15,17 @@ public class ButtonShop : MonoBehaviour
 
     void Start()
     {
+        //Elegir un nombre
+        nameItem = posiblesNombres[Random.Range(0, posiblesNombres.Length)];
+        // nameItem = ....
+
         textButton = transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         priceItem = Random.Range(25f, 350f);
-        textButton.text = priceItem.ToString() + " €";
+        textButton.text = nameItem + "\n" + priceItem.ToString() + " €";
     }
 
     public void ClickEnBotonDeTienda()
     {
-        myWallet.RestarSaldo(priceItem);
-    
+        Wallet.instance.InformarCompra(nameItem, priceItem);
     }
 }
